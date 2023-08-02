@@ -5,6 +5,8 @@ from provLogParser import ProvG_get_relations
 import difflib
 import os
 
+baseLineApp = "/Users/michaelxi/Desktop/parser/logs/audit7.log" # no  jni + node filter + relation filter + do absolute nothing
+
 helloworld1 = "/Users/michaelxi/Desktop/parser/logs/audit1.log" # no  jni + node filter + relation filter
 helloworld2 = "/Users/michaelxi/Desktop/parser/logs/audit2.log" # no  jni + node filter
 helloworld3 = "/Users/michaelxi/Desktop/parser/logs/audit3.log" # has jni + node filter
@@ -12,26 +14,29 @@ getUserLoc1 = "/Users/michaelxi/Desktop/parser/logs/audit4.log" # no  jni + node
 
 writeFileExe = "/Users/michaelxi/Desktop/parser/camflow-examples/example-write-file.log" # executable + node filter + relation filter
 writeFileApp = "/Users/michaelxi/Desktop/parser/logs/audit5.log"                         # has jni    + node filter + relation filter + write to external storage
-readFileApp  = "/Users/michaelxi/Desktop/parser/logs/audit6.log"                         # has jni    + node filter + relation filter + read /data/local/tmp file
-
+readFileApp1 = "/Users/michaelxi/Desktop/parser/logs/audit6.log"                         # has jni    + node filter + relation filter + read /data/local/tmp file
+readFileApp2 = "/Users/michaelxi/Desktop/parser/logs/audit8.log"                         # no  jni    + node filter + relation filter + read /data/local/tmp file
+pinduoduoApp = "/Users/michaelxi/Desktop/parser/logs/audit-pdd.log"                      # ?   jni    + node filter + relation filter
 
 ############################ Get all pathnames and counts ############################
 
-vertices1, edges1 = spade_json_load_graphs(writeFileApp)
-vertices2, edges2 = spade_json_load_graphs(readFileApp)
+vertices1, edges1 = spade_json_load_graphs(baseLineApp)
+vertices2, edges2 = spade_json_load_graphs(pinduoduoApp)
 
 ProvG_get_pathnames(vertices1, 1)
 ProvG_get_pathnames(vertices2, 2)
 
-# Compare the diff of two files
+# compare the diff of two files
 with open('pathnames1.txt', 'r') as file1, open('pathnames2.txt', 'r') as file2:
     lines1 = sorted(file1.readlines())
     lines2 = sorted(file2.readlines())
 
 diff = difflib.unified_diff(lines1, lines2)
-print(''.join(diff))
+# write diff to a file
+with open('pathname-diff.txt', 'w') as outfile:
+    outfile.write(''.join(diff))
 
-# Delete intermediate files
+# delete intermediate files
 os.remove("pathnames1.txt")
 os.remove("pathnames2.txt")
 

@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 
 # user inputs
 # 1. camflow provenance log
-log_path = "/Users/michaelxi/Desktop/parser/logs/audit6.log"
+log_path = "/Users/michaelxi/Desktop/parser/logs/audit8.log"
 # 2. start node id
-start_node_id = "AAEAAAAAACCqmQEAAAAAAAEAAADMX5R0AAAAAAAAAAA="
+start_node_id = "AABAAAAAACR5YRbQPVi6jQEAAAB5kZYJAAAAAAAAAAA="
 # 3. end node id
-end_node_id = "AABAAAAAACRM20QdYilYJwEAAADMX5R0AAAAAAAAAAA="
+end_node_id = "AABAAAAAACRM20QdYilYJwEAAAB5kZYJAAAAAAAAAAA="
 
 
 # generate the provenance graph

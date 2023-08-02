@@ -1,3 +1,4 @@
+import os
 from provLogParser import CamFlow_gen_ProvG
 from provLogParser import spade_json_load_graphs
 
@@ -9,16 +10,24 @@ import matplotlib.patches as mpatches
 def main():
     # user inputs
     # 1. camflow provenance log
-    log_path = "/Users/michaelxi/Desktop/parser/logs/audit6.log"
+    log_path = "/Users/michaelxi/Desktop/parser/logs/audit-pdd.log"
     # 2. start node id - root of subgraph bfs
-    start_node_id = "AABAAAAAACQ+JNrN57JRBQEAAADMX5R0AAAAAAAAAAA="
+    start_node_id = "AABAAAAAACTL5NZvLDkY0wEAAABaiSBMAAAAAAAAAAA="
     # 3. max-depth of bfs traversal
-    max_depth = 4
+    max_depth = 3
 
+    # graph storage file
+    graph_file = "provG-cache.graphml"
 
-    # construct the subgraph
-    vertices, edges = spade_json_load_graphs(log_path)                   # group vertices and edges
-    provG = CamFlow_gen_ProvG(vertices, edges)                           # build camflow dependency graph
+    if os.path.exists(graph_file):
+        # load the graph if it already exists
+        provG = nx.read_graphml(graph_file)
+    else:
+        # construct the graph if it does not exist
+        vertices, edges = spade_json_load_graphs(log_path)               # group vertices and edges
+        provG = CamFlow_gen_ProvG(vertices, edges)                       # build camflow dependency graph
+        nx.write_graphml(provG, graph_file)    
+
     undirected_provG = provG.to_undirected()                             # transform directed graph to undirected graph
     subgraph = BFS_subgraph(undirected_provG, start_node_id, max_depth)  # generate subgraph with specified max-depth
 

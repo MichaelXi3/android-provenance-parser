@@ -1,0 +1,5 @@
+directory name: root-pathnode-input
+meaning: the root node of BFS subgraph is a pathnode with pathname /local/tmp/input.txt
+
+file name: BFS-input-3
+meaning: current png is the provG generated using BFS from input.txt pathnode and with maximum depth 3.
