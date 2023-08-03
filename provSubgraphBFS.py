@@ -1,4 +1,6 @@
 import os
+import argparse
+
 from provLogParser import CamFlow_gen_ProvG
 from provLogParser import spade_json_load_graphs
 
@@ -8,30 +10,34 @@ import matplotlib.patches as mpatches
 
 
 def main():
-    # user inputs
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--path", type=str, required=True,
+                        help="Absolute path to the log file")
+    parser.add_argument("--start", type=str, required=True,
+                        help="Enter the start node id of BFS")
+    parser.add_argument("--depth", type=int, required=True,
+                        help="Specify the depth of BFS")
+    args = parser.parse_args()
+
+    # User inputs
     # 1. camflow provenance log
-    log_path = "/Users/michaelxi/Desktop/parser/logs/audit-pdd.log"
+    log_path = args.path
     # 2. start node id - root of subgraph bfs
-    start_node_id = "AABAAAAAACTL5NZvLDkY0wEAAABaiSBMAAAAAAAAAAA="
+    start_node_id = args.start
     # 3. max-depth of bfs traversal
-    max_depth = 3
+    max_depth = args.depth
 
-    # graph storage file
-    graph_file = "provG-cache.graphml"
-
-    if os.path.exists(graph_file):
-        # load the graph if it already exists
-        provG = nx.read_graphml(graph_file)
-    else:
-        # construct the graph if it does not exist
-        vertices, edges = spade_json_load_graphs(log_path)               # group vertices and edges
-        provG = CamFlow_gen_ProvG(vertices, edges)                       # build camflow dependency graph
-        nx.write_graphml(provG, graph_file)    
+    vertices, edges = spade_json_load_graphs(log_path)                   # group vertices and edges
+    provG = CamFlow_gen_ProvG(vertices, edges)                           # build camflow dependency graph
 
     undirected_provG = provG.to_undirected()                             # transform directed graph to undirected graph
     subgraph = BFS_subgraph(undirected_provG, start_node_id, max_depth)  # generate subgraph with specified max-depth
 
-    # draw the subgraph
+    drawBFSSubGraph(subgraph=subgraph)
+
+
+# Draw the BFS subgraph
+def drawBFSSubGraph(subgraph):
     G_sub = nx.DiGraph()
     for u, v, data in subgraph.edges(data=True):
         if G_sub.has_edge(u, v):
@@ -76,8 +82,7 @@ def main():
     plt.legend(handles=[red_patch, skyblue_patch, grey_patch, orange_patch, lightgreen_patch, purple_patch])
     plt.show()
 
-
-
+# Generate the BFS subgraph
 def BFS_subgraph(provG, start_node_id, max_depth):
     neighbors = list(provG.neighbors(start_node_id))
     print(neighbors)
@@ -88,3 +93,5 @@ def BFS_subgraph(provG, start_node_id, max_depth):
 
 if __name__ == "__main__":
     main()
+
+# python3 provSubgraphBFS.py --path ./logs/audit8.log --start AABAAAAAACRM20QdYilYJwEAAAB5kZYJAAAAAAAAAAA= --depth 3

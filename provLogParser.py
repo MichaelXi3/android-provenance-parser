@@ -222,6 +222,8 @@ def ProvG_collapse_version_edges(provG):
                 if provG.nodes[src]['prov_type'] == node_type and provG.nodes[dst]['prov_type'] == node_type:
                     to_collapse.append((src, dst))
 
+        to_collapse.sort(key=lambda x: x[0] + x[1])
+
         # Group nodes connected by same 'version_activity' edge into one set -> as single new node after collapse
         connected_nodes = []
         while to_collapse:
@@ -420,5 +422,5 @@ if __name__ == "__main__":
     # path5 = "/Users/michaelxi/Desktop/parser/logs/audit1.log"
     # path6 = "/Users/michaelxi/Desktop/parser/logs/audit5.log"
 
-# python3 provLogParser.py --graph_type multigraph --log_file /Users/michaelxi/Desktop/parser/ProvG-Executable/example-write-file.log --collapse true
-# python3 provLogParser.py --graph_type multigraph --log_file /Users/michaelxi/Desktop/parser/logs/audit8.log --collapse true
+# python3 provLogParser.py --graph_type multigraph --log_file ./ProvG-Executable/example-write-file.log --collapse true
+# python3 provLogParser.py --graph_type multigraph --log_file ./logs/audit8.log --collapse true
