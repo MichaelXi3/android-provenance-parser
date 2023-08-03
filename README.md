@@ -35,8 +35,8 @@ python3 provGraphDiff.py [-h] --path1 PATH1 --path2 PATH2 [--relation RELATION]
 ```
 
 - `-h`, `--help`: Show the help message and exit
-- `--path1 PATH1`: Required. Specify the absolute path to the first log file
-- `--path2 PATH2`: Required. Specify the absolute path to the second log file
+- `--path1 PATH1`: Required. Specify the path to the first log file
+- `--path2 PATH2`: Required. Specify the path to the second log file
 - `--relation RELATION`: Optional. Get diffs in relation types and counts
 
 ```python
@@ -57,7 +57,7 @@ python3 provSubgraphBFS.py [-h] --path PATH --start START --depth DEPTH
 ```
 
 - `-h`, `--help`: Show the help message and exit
-- `--path PATH`: Required. Specify the absolute path to the log file
+- `--path PATH`: Required. Specify the path to the log file
 - `--start START`: Required. Enter the start node id of the BFS
 - `--depth DEPTH`: Required. Specify the depth of the BFS
 
@@ -79,7 +79,7 @@ python3 provSubgraphDFS.py [-h] --path PATH --start START --end END
 ```
 
 - `-h`, `--help`: Show the help message and exit
-- `--path PATH`: Required. Specify the absolute path to the log file
+- `--path PATH`: Required. Specify the path to the log file
 - `--start START`: Required. Enter the start node id of the DFS
 - `--end END`: Required. Enter the end node id of the DFS
 
