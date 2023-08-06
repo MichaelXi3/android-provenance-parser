@@ -3,6 +3,8 @@ import json
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.patches as mpatches
 import random
 import datetime
 import json
@@ -380,6 +382,65 @@ def multigraph_code(provG):
     plt.legend(handles=[red_patch, skyblue_patch, grey_patch, orange_patch, lightgreen_patch, purple_patch])
     plt.show()
 
+# Draw provG using Digraph in 3d
+def digraph_3d_code(provG):
+    # Create a DiGraph graph
+    G = nx.DiGraph()
+
+    # Iterate through the edges and add them to the new graph
+    for u, v, data in provG.edges(data=True):
+        if G.has_edge(u, v):
+            # if the edge already exists, append the new label to the existing one
+            G[u][v]['label'] = G[u][v]['label'] + ', ' + data['label']
+        else:
+            # else, create a new edge
+            G.add_edge(u, v, label=data['label'])
+
+    # Define node colors based on 'prov_type'
+    colors = {
+        'process_memory': (1, 0.6, 0.6),
+        'file': (0.53, 0.808, 0.980),  # approximate RGB for 'skyblue'
+        'path': (0.5, 0.5, 0.5),       # approximate RGB for 'grey'
+        'machine': (1, 0.647, 0),      # approximate RGB for 'orange'
+        'task': (0.564, 0.933, 0.564)  # approximate RGB for 'lightgreen'
+    }
+
+    node_colors = [colors.get(data['prov_type'], 'purple') for node, data in provG.nodes(data=True)]
+
+    # Define the size of each node based on the number of edges connected to it
+    sizes = [500 + 50 * provG.degree(node) for node in provG.nodes]
+
+    # Create position layout in 3D
+    pos = nx.spring_layout(provG, dim=3)
+
+    # Extract 3D coordinates
+    x_vals = [pos[k][0] for k in pos.keys()]
+    y_vals = [pos[k][1] for k in pos.keys()]
+    z_vals = [pos[k][2] for k in pos.keys()]
+
+    # Create a 3D figure
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Draw nodes
+    ax.scatter(x_vals, y_vals, z_vals, s=sizes, c=node_colors)
+
+    # Draw edges
+    for edge in G.edges():
+        x = [pos[edge[0]][0], pos[edge[1]][0]]
+        y = [pos[edge[0]][1], pos[edge[1]][1]]
+        z = [pos[edge[0]][2], pos[edge[1]][2]]
+        ax.plot(x, y, z, color='gray')
+
+    # Create patches for the legend
+    patches = [mpatches.Patch(color=value, label=key) for key, value in colors.items()]
+    patches.append(mpatches.Patch(color='purple', label='Other'))
+
+    # Add legend
+    ax.legend(handles=patches)
+
+    plt.show()
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -407,6 +468,8 @@ def main():
         digraph_code(provG)
     elif args.graph_type.lower() == "multigraph":
         multigraph_code(provG)
+    elif args.graph_type.lower() == "3d":
+        digraph_3d_code(provG)
     else:
         print("Invalid graph type! Please specify either 'digraph' or 'multigraph'.")
 
@@ -424,3 +487,4 @@ if __name__ == "__main__":
 
 # python3 provLogParser.py --graph_type multigraph --log_file ./ProvG-Executable/example-write-file.log --collapse true
 # python3 provLogParser.py --graph_type multigraph --log_file ./logs/audit8.log --collapse true
+# python3 provLogParser.py --graph_type 3d --log_file ./ProvG-Executable/example-cp.log --collapse true
