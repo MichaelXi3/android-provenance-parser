@@ -19,7 +19,7 @@ python3 provLogParser.py [-h] [--graph_type GRAPH_TYPE] --log_file LOG_FILE --co
 
 ```python
 # Example Usage - you can copy this directly to your command line to get the graph
-python3 provLogParser.py --graph_type multigraph --log_file ./ProvG-Executable/example-write-file.log --collapse true
+python3 provLogParser.py --graph_type digraph --log_file ./ProvG-Executable/example-write-file.log --collapse true
 python3 provLogParser.py --graph_type 3d --log_file ./ProvG-Executable/example-cp.log --collapse true
 ```
 
